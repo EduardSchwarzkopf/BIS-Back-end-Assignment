@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 
 services:
   mariadb:
@@ -11,13 +11,13 @@ services:
   myapp:
     image: docker.io/bitnami/laravel:9
     ports:
-      - '8000:8000'
+      - "8000:8000"
     environment:
       - DB_HOST=mariadb
       - DB_PORT=3306
       - DB_USERNAME=bn_myapp
       - DB_DATABASE=bitnami_myapp
     volumes:
-      - './my-project:/app'
+      - "./my-project:/app"
     depends_on:
       - mariadb
