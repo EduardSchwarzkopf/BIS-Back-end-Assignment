@@ -10,6 +10,7 @@ class UsersMetaData extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'surname',
         'nickname',
         'phone',
