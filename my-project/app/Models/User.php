@@ -21,7 +21,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
+
+    protected $with = ['meta_data'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -40,5 +43,11 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean',
     ];
+
+    public function metaData()
+    {
+        return $this->hasOne(UsersMetaData::class);
+    }
 }
