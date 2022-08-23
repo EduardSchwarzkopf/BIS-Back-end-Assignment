@@ -12,6 +12,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public const VALIDATION_RULES = [
+        'meta_data' => ['nullable', 'array']
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,7 +25,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'is_admin',
+        'is_admin'
     ];
 
     protected $with = ['meta_data'];
@@ -46,7 +50,7 @@ class User extends Authenticatable
         'is_admin' => 'boolean',
     ];
 
-    public function metaData()
+    public function meta_data()
     {
         return $this->hasOne(UsersMetaData::class);
     }
