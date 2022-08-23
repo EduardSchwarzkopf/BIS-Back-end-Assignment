@@ -10,6 +10,7 @@ services:
       - MARIADB_DATABASE=bitnami_myapp
   myapp:
     image: docker.io/bitnami/laravel:9
+    user: 1000:1000
     ports:
       - "8000:8000"
     environment:
