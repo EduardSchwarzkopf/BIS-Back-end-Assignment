@@ -26,7 +26,6 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
         return Comment::create($request->all());
     }
 
