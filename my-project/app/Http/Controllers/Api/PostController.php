@@ -28,6 +28,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $this->handleDescription($request);
         return Post::create($request->all());
     }
 
@@ -51,6 +52,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        $this->handleDescription($request);
         $post->update($request->all());
         return $post;
     }
@@ -78,5 +80,15 @@ class PostController extends Controller
     {
         $postList = Post::where('subject', 'like', '%' . $subject . '%')->get();
         return PostResource::collection($postList);
+    }
+
+    private function handleDescription(Request &$request): void
+    {
+
+        if (empty($request->description)) {
+            $request->merge(
+                ['description' => substr($request->content, 0, 155)]
+            );
+        }
     }
 }

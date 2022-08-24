@@ -14,6 +14,7 @@ class Post extends Model
     protected $fillable = [
         'subject',
         'content',
+        'description'
     ];
 
 
