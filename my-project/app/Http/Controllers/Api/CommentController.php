@@ -64,4 +64,30 @@ class CommentController extends Controller
         $comment->delete();
         return response()->noContent();
     }
+
+    /**
+     * restore desired model
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restore(int $id)
+    {
+        $this->authorize('restore', Comment::class);
+        $post = Comment::withTrashed()->find($id)->restore();
+        return $post;
+    }
+
+    /**
+     * remove model permantly
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function forceDelete(int $id)
+    {
+        $this->authorize('forceDelete', Comment::class);
+        Comment::onlyTrashed()->find($id)->forceDelete();
+        return response()->noContent();
+    }
 }
