@@ -52,9 +52,16 @@ class UserController extends Controller
         ]);
 
         $metaData = is_array($request->meta_data) ? $request->meta_data : [];
-        $metaDataList = ['user_id' => $user->id] + $metaData;
-        $this->createNickname($fields, $metaDataList);
-        UsersMetaData::create($metaDataList);
+
+        try {
+            $metaDataList = ['user_id' => $user->id] + $metaData;
+            $this->createNickname($fields, $metaDataList);
+            UsersMetaData::create($metaDataList);
+        } catch (QueryException $ex) {
+            $user->delete();
+            abort(422, 'Error: Could not create user.');
+        }
+
         // refresh data before return
         $user = $user->fresh();
 
