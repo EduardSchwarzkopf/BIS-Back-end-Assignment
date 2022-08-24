@@ -16,7 +16,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::all();
+        // make newest on top
+        return Post::orderBy('created_at', 'desc')->get();
     }
 
     /**
