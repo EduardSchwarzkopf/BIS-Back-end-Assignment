@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 
-use App\Http\Resources\UserRessource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -34,7 +34,7 @@ class ApiAuthController extends Controller
         $token = $user->createToken('access_token')->plainTextToken;
 
         $response = [
-            'user' => new UserRessource($user),
+            'user' => new UserResource($user),
             'access_token' => $token
         ];
 
@@ -45,7 +45,7 @@ class ApiAuthController extends Controller
     {
         $user = auth()->user();
 
-        return new UserRessource($user);
+        return new UserResource($user);
     }
 
     public function logout(Request $request)

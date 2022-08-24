@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserRessource;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UsersMetaData;
 use Illuminate\Database\QueryException;
@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('viewAny', User::class);
-        return UserRessource::collection(User::all());
+        return UserResource::collection(User::all());
     }
 
     /**
@@ -65,7 +65,7 @@ class UserController extends Controller
         // refresh data before return
         $user = $user->fresh();
 
-        return UserRessource::make($user);
+        return UserResource::make($user);
     }
 
     /**
@@ -94,7 +94,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
-        return new UserRessource($user);
+        return new UserResource($user);
     }
 
     /**
@@ -127,7 +127,7 @@ class UserController extends Controller
 
         $user->update($fields);
 
-        return new UserRessource($user);
+        return new UserResource($user);
     }
 
     /**
