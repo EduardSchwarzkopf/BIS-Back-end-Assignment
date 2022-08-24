@@ -8,5 +8,5 @@ This is a demo using Docker and Laravel. Data is stored here permanently
 2. clone this project
 3. cd into the folder
 4. run `docker-compose up -d`
-5. run `docker-compose exec myapp php artisan migrate`
+5. run `docker-compose exec myapp php artisan migrate` << Wait for mysql to be ready
 6. check `localhost:8000`
