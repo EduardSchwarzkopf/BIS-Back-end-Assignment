@@ -52,18 +52,30 @@ class UserController extends Controller
         ]);
 
         $metaData = is_array($request->meta_data) ? $request->meta_data : [];
-        try {
-            $metaDataList = ['user_id' => $user->id] + $metaData;
-            UsersMetaData::create($metaDataList);
-        } catch (QueryException $ex) {
-            $user->delete();
-            abort(422, 'Error: Could not create user.');
-        }
-
+        $metaDataList = ['user_id' => $user->id] + $metaData;
+        $this->createNickname($fields, $metaDataList);
+        UsersMetaData::create($metaDataList);
         // refresh data before return
         $user = $user->fresh();
 
         return UserRessource::make($user);
+    }
+
+    /**
+     * Create Nickname with complete surname and first 3 letters of name.
+     * see: https://github.com/EduardSchwarzkopf/BIS-Back-end-Assignment/issues/3
+     *
+     * @param  array $fields
+     * @param  array $metaDataList
+     */
+    private function createNickname(array $fields, array &$metaDataList): void
+    {
+
+        if (array_key_exists('surname', $metaDataList) == false) {
+            return;
+        }
+
+        $metaDataList['nickname'] = $metaDataList['surname'] . substr($fields['name'], 0, 3);
     }
 
     /**
