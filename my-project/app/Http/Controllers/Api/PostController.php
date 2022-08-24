@@ -82,6 +82,12 @@ class PostController extends Controller
         return PostResource::collection($postList);
     }
 
+    /**
+     * handle description
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
     private function handleDescription(Request &$request): void
     {
 
@@ -92,6 +98,12 @@ class PostController extends Controller
         }
     }
 
+    /**
+     * restore desired model
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function restore(int $id)
     {
         $this->authorize('restore', Post::class);
@@ -99,6 +111,12 @@ class PostController extends Controller
         return $post;
     }
 
+    /**
+     * remove model permantly
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
     public function forceDelete(int $id)
     {
         $this->authorize('forceDelete', Post::class);
