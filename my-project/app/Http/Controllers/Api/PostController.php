@@ -91,4 +91,18 @@ class PostController extends Controller
             );
         }
     }
+
+    public function restore(int $id)
+    {
+        $this->authorize('restore', Post::class);
+        $post = Post::withTrashed()->find($id)->restore();
+        return $post;
+    }
+
+    public function forceDelete(int $id)
+    {
+        $this->authorize('forceDelete', Post::class);
+        Post::onlyTrashed()->find($id)->forceDelete();
+        return response()->noContent();
+    }
 }
