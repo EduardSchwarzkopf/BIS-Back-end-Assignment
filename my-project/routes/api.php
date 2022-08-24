@@ -28,6 +28,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->middleware('auth:web');
     Route::apiResource('users', UserController::class);
     Route::apiResource('posts', PostController::class);
+    Route::apiResource('posts', PostController::class);
+    Route::get('/posts/restore/{id}', [PostController::class, 'restore']);
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
+    Route::delete('/posts/forcedelete/{id}', [PostController::class, 'forcedelete']);
     Route::apiResource('comments', CommentController::class);
 });
