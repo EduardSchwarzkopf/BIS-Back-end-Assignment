@@ -17,6 +17,7 @@ class Post extends Model
         'description'
     ];
 
+    protected $with = ['user'];
 
     protected static function booted()
     {
