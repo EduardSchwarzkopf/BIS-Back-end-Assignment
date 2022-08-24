@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, Prunable;
 
 
     protected $fillable = [
@@ -17,6 +18,11 @@ class Post extends Model
         'content',
         'description'
     ];
+
+    public function prunable()
+    {
+        return static::where('created_at', '<=', now()->subHours(3));
+    }
 
     protected $with = ['user', 'comments'];
 
