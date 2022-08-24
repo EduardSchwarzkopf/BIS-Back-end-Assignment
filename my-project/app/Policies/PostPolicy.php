@@ -16,9 +16,9 @@ class PostPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore()
+    public function restore(User $user)
     {
-        return Auth::user()->is_admin;
+        return $user->is_admin;
     }
 
     /**
@@ -26,9 +26,9 @@ class PostPolicy
      *
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete()
+    public function forceDelete(User $user)
     {
-        return Auth::user()->is_admin;
+        return $user->is_admin;
     }
 
     /**
