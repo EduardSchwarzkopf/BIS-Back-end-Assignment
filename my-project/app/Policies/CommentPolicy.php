@@ -66,4 +66,24 @@ class CommentPolicy
     {
         return $user->is_admin;
     }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user)
+    {
+        return $user->is_admin;
+    }
+
+    /**
+     * Determine whether the user can force delete the model.
+     *
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDelete(User $user)
+    {
+        return $user->is_admin;
+    }
 }
