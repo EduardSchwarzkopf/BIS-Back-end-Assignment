@@ -27,4 +27,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->middleware('auth:web');
     Route::apiResource('users', UserController::class);
     Route::apiResource('posts', PostController::class);
+    Route::get('/posts/search/{subject}', [PostController::class, 'search']);
 });

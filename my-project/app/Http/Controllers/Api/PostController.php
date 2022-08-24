@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -64,5 +65,17 @@ class PostController extends Controller
         $this->authorize('delete', $post);
         $post->delete();
         return response()->noContent();
+    }
+
+    /**
+     * Search by subject
+     *
+     * @param  str $subject
+     * @return \Illuminate\Http\Response
+     */
+    public function search($subject)
+    {
+        $postList = Post::where('subject', 'like', '%' . $subject . '%')->get();
+        return PostResource::collection($postList);
     }
 }
