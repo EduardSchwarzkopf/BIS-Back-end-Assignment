@@ -33,4 +33,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
     Route::delete('/posts/forcedelete/{id}', [PostController::class, 'forcedelete']);
     Route::apiResource('comments', CommentController::class);
+    Route::get('/comments/restore/{id}', [CommentController::class, 'restore']);
+    Route::delete('/comments/forcedelete/{id}', [CommentController::class, 'forcedelete']);
 });
