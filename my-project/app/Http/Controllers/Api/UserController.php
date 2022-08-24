@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserRessource;
 use App\Models\User;
+use App\Models\UsersMetaData;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 
@@ -48,6 +50,18 @@ class UserController extends Controller
             'is_admin' => $fields['is_admin'],
             'password' => bcrypt($fields['password'])
         ]);
+
+        $metaData = is_array($request->meta_data) ? $request->meta_data : [];
+        try {
+            $metaDataList = ['user_id' => $user->id] + $metaData;
+            UsersMetaData::create($metaDataList);
+        } catch (QueryException $ex) {
+            $user->delete();
+            abort(422, 'Error: Could not create user.');
+        }
+
+        // refresh data before return
+        $user = $user->fresh();
 
         return UserRessource::make($user);
     }
