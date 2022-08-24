@@ -17,13 +17,18 @@ class Post extends Model
         'description'
     ];
 
-    protected $with = ['user'];
+    protected $with = ['user', 'comments'];
 
     protected static function booted()
     {
         static::creating(function ($post) {
             $post->user_id = Auth::id();
         });
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 
     public function user()
