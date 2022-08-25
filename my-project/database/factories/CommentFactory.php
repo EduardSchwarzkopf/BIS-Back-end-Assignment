@@ -18,7 +18,7 @@ class CommentFactory extends Factory
     public function definition()
     {
         if (Post::count() == 0) {
-            Post::factory()->count(10)->create();
+            Post::factory(10)->create();
         };
 
         return [
