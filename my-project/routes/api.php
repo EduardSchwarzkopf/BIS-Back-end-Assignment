@@ -18,10 +18,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-// Public routes
-Route::post('/login', [ApiAuthController::class, 'login']);
-Route::post('/users/', [UserController::class, 'index']);
-
 
 // Protected Routes
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -39,3 +35,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/comments/trashed/{id}', [CommentController::class, 'trashedShow']);
     Route::delete('/comments/forcedelete/{id}', [CommentController::class, 'forcedelete']);
 });
+
+// Public routes
+Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/register', [UserController::class, 'store']);
