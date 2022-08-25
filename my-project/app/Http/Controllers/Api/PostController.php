@@ -99,6 +99,26 @@ class PostController extends Controller
     }
 
     /**
+     * Display the specified trashed resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function trashedShow(int $id)
+    {
+        return  Post::onlyTrashed()->find($id);
+    }
+
+    /**
+     * Display a listing of the trashed resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function trashed()
+    {
+        return  Post::onlyTrashed()->paginate(10);
+    }
+
+    /**
      * restore desired model
      *
      * @param  int $id
