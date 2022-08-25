@@ -8,7 +8,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UsersMetaData;
 use Illuminate\Database\QueryException;
-use Illuminate\Validation\Rules;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -50,7 +50,7 @@ class UserController extends Controller
         // refresh data before return
         $user = $user->fresh();
 
-        return UserResource::make($user);
+        return UserResource::make($user)->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
