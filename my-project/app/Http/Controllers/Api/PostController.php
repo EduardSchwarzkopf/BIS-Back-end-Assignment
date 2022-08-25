@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         $this->handleDescription($request);
         return Post::create($request->all());
@@ -50,7 +51,7 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(PostRequest $request, Post $post)
     {
         $this->handleDescription($request);
         $post->update($request->all());
@@ -88,7 +89,7 @@ class PostController extends Controller
      * @param  Request $request
      * @return \Illuminate\Http\Response
      */
-    private function handleDescription(Request &$request): void
+    private function handleDescription(PostRequest &$request): void
     {
 
         if (empty($request->description)) {
