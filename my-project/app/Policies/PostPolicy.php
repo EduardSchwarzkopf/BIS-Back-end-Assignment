@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Auth;
 
 class PostPolicy
 {
@@ -17,6 +16,16 @@ class PostPolicy
      * @return \Illuminate\Auth\Access\Response|bool
      */
     public function restore(User $user)
+    {
+        return $user->is_admin;
+    }
+
+    /**
+     * Determine whether the user can view trashed items.
+     *
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewTrashed(User $user)
     {
         return $user->is_admin;
     }

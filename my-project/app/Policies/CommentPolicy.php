@@ -68,6 +68,16 @@ class CommentPolicy
     }
 
     /**
+     * Determine whether the user can view trashed items.
+     *
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewTrashed(User $user)
+    {
+        return $user->is_admin;
+    }
+
+    /**
      * Determine whether the user can restore the model.
      *
      * @return \Illuminate\Auth\Access\Response|bool

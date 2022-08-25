@@ -72,6 +72,7 @@ class CommentController extends Controller
      */
     public function trashedShow(int $id)
     {
+        $this->authorize('viewTrashed', Post::class);
         return  Comment::onlyTrashed()->find($id);
     }
 
@@ -82,6 +83,7 @@ class CommentController extends Controller
      */
     public function trashed()
     {
+        $this->authorize('viewTrashed', Post::class);
         return  Comment::onlyTrashed()->paginate(10);
     }
 

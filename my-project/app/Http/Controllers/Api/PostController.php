@@ -105,6 +105,7 @@ class PostController extends Controller
      */
     public function trashedShow(int $id)
     {
+        $this->authorize('viewTrashed', Post::class);
         return  Post::onlyTrashed()->find($id);
     }
 
@@ -115,6 +116,7 @@ class PostController extends Controller
      */
     public function trashed()
     {
+        $this->authorize('viewTrashed', Post::class);
         return  Post::onlyTrashed()->paginate(10);
     }
 
