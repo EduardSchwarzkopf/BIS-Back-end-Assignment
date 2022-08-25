@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 
 class UserUtility
 {
@@ -25,5 +26,27 @@ class UserUtility
                 'zip' => 'test_zip'
             ],
         ];
+    }
+
+    static public function user(): User
+    {
+        $user = User::where('is_admin', false)->first();
+
+        if ($user == null) {
+            $user = User::factory()->create();
+        }
+
+        return $user;
+    }
+
+    static public function admin(): User
+    {
+        $user = User::where('is_admin', true)->first();
+
+        if ($user == null) {
+            $user = User::factory()->create(['is_admin' => true]);
+        }
+
+        return $user;
     }
 }
