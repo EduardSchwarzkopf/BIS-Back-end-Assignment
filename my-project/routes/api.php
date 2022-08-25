@@ -28,11 +28,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->middleware('auth:web');
     Route::apiResource('users', UserController::class);
     Route::apiResource('posts', PostController::class);
-    Route::apiResource('posts', PostController::class);
     Route::get('/posts/restore/{id}', [PostController::class, 'restore']);
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
+    Route::get('/posts/trashed/all/', [PostController::class, 'trashed']);
+    Route::get('/posts/trashed/{id}', [PostController::class, 'trashedShow']);
     Route::delete('/posts/forcedelete/{id}', [PostController::class, 'forcedelete']);
     Route::apiResource('comments', CommentController::class);
     Route::get('/comments/restore/{id}', [CommentController::class, 'restore']);
+    Route::get('/comments/trashed/all/', [CommentController::class, 'trashed']);
+    Route::get('/comments/trashed/{id}', [CommentController::class, 'trashedShow']);
     Route::delete('/comments/forcedelete/{id}', [CommentController::class, 'forcedelete']);
 });
