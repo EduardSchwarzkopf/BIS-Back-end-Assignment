@@ -2,35 +2,35 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
-    public function test_UserLoginSuccessfull()
+    public function test_UserRegistration()
     {
-        $user = User::factory()->create();
-
-        $response = $this->post('/api/login', [
-            'email' => $user->email,
-            'password' => "password"
-        ]);
-
-        $response->assertStatus(201);
+        $response = $this->post('/api/register', UserUtility::payload());
+        $response->assertCreated();
     }
 
     public function test_UserLoginFailed()
     {
-        $user = User::factory()->create();
-
         $response = $this->post('/api/login', [
-            'email' => $user->email,
+            'email' => UserUtility::EMAIL,
             'password' => "wrongPassword"
         ]);
 
-        $response->assertStatus(401);
+        $response->assertUnauthorized();
+    }
+
+
+    public function test_UserLogin()
+    {
+
+        $loginResponse = $this->post('/api/login', [
+            'email' => UserUtility::EMAIL,
+            'password' => UserUtility::PASSWORD
+        ]);
+
+        $loginResponse->assertCreated();
     }
 }
