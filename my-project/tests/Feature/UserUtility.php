@@ -49,4 +49,21 @@ class UserUtility
 
         return $user;
     }
+
+    static public function accessToken(): string
+    {
+        $user = UserUtility::user();
+        return UserUtility::getAccessToken($user);
+    }
+
+    static public function adminAccessToken(): string
+    {
+        $user = UserUtility::admin();
+        return UserUtility::getAccessToken($user);
+    }
+
+    static private function getAccessToken(User $user): string
+    {
+        return $user->createToken('access_token')->plainTextToken;
+    }
 }
