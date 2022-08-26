@@ -118,4 +118,44 @@ class PostTest extends TestCase
         $this->assertEquals($user->id, $dataUser['id']);
         $this->assertEquals($user->name, $dataUser['name']);
     }
+
+    public function test_newestPostFirst()
+    {
+
+        $postList = Post::factory(10)->create();
+        $postList = $postList->all();
+
+        // sort by date desc
+        usort($postList, fn ($a, $b) => strtotime($b["created_at"]) - strtotime($a["created_at"]));
+
+        $response = $this->getPosts();
+
+        $responsePostList = $response->json('data');
+
+        for ($i = 0; $i < count($postList); $i++) {
+            $post = $postList[$i];
+            $responsePost = $responsePostList[$i];
+
+            $this->assertEquals(strtotime($post['created_at']), strtotime($responsePost['created_at']));
+        }
+    }
+
+    public function test_newestPostFirstFail()
+    {
+        $postList = Post::factory(10)->create([
+            'created_at' => fake()->dateTimeThisMonth()
+        ]);
+        $postList = $postList->all();
+
+        $response = $this->getPosts();
+
+        $responsePostList = $response->json('data');
+
+        for ($i = 0; $i < count($postList); $i++) {
+            $post = $postList[$i];
+            $responsePost = $responsePostList[$i];
+
+            $this->assertEquals(strtotime($post['created_at']), strtotime($responsePost['created_at']));
+        }
+    }
 }
