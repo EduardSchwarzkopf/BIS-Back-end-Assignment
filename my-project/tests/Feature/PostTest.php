@@ -22,29 +22,43 @@ class PostTest extends TestCase
         ]);
     }
 
+    private function createPost(string $accessToken, array $payload = []): TestResponse
+    {
+
+        if (count($payload) == 0) {
+            $payload = [
+                'subject' => fake()->text(20),
+                'description' => fake()->text(50),
+                'content' => fake()->text(300),
+            ];
+        }
+
+        return UserUtility::authApiRequest($this, $this::ENDPOINT, $accessToken, 'POST', $payload);
+    }
+
     public function test_createPost()
     {
 
         $token = UserUtility::accessToken();
 
-        $payload = [
-            'subject' => fake()->text(20),
-            'description' => fake()->text(50),
-            'content' => fake()->text(300),
-        ];
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT, $token, 'POST', $payload);
+        $response = $this->createPost($token);
         $response->assertCreated();
     }
 
     public function test_updatePost()
     {
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+        $this->actingAs($user);
+
         $post = Post::factory()->create();
+        $post->user_id;
 
         $subject = 'New Subject';
         $payload = ['subject' => $subject];
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, UserUtility::accessToken(), 'PUT', $payload);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, $token, 'PUT', $payload);
 
         $response->assertOk();
 
@@ -55,6 +69,9 @@ class PostTest extends TestCase
     public function test_getAllPosts()
     {
         $postCount = 10;
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
         Post::factory($postCount)->create();
 
         $response = $this->getPosts();
@@ -68,6 +85,8 @@ class PostTest extends TestCase
 
     public function test_getSinglePost()
     {
+        $user = UserUtility::user();
+        $this->actingAs($user);
         $post = Post::factory()->create();
 
         $response = $this->getPosts($post->id);
@@ -86,12 +105,12 @@ class PostTest extends TestCase
         $token = UserUtility::accessToken();
 
         $payload = [
-            'subject' => fake()->text(200),
+            'subject' => fake()->text(100),
             'description' => fake()->text(50),
             'content' => fake()->text(300),
         ];
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT, $token, 'POST', $payload);
+        $response = $this->createPost($token, $payload);
 
         $response->assertUnprocessable();
 
@@ -103,6 +122,8 @@ class PostTest extends TestCase
 
     public function test_expectedPostData()
     {
+        $user = UserUtility::user();
+        $this->actingAs($user);
         $post = Post::factory()->create();
 
         $response = $this->getPosts($post->id);
@@ -122,6 +143,8 @@ class PostTest extends TestCase
     public function test_newestPostFirst()
     {
 
+        $user = UserUtility::user();
+        $this->actingAs($user);
         $postList = Post::factory(10)->create();
         $postList = $postList->all();
 
@@ -142,6 +165,8 @@ class PostTest extends TestCase
 
     public function test_newestPostFirstFail()
     {
+        $user = UserUtility::user();
+        $this->actingAs($user);
         $postList = Post::factory(10)->create([
             'created_at' => fake()->dateTimeThisMonth()
         ]);
@@ -157,5 +182,17 @@ class PostTest extends TestCase
 
             $this->assertEquals(strtotime($post['created_at']), strtotime($responsePost['created_at']));
         }
+    }
+
+    public function test_deleteOwnPost()
+    {
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+        $this->actingAs($user);
+        $post = Post::factory()->create();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, $token, 'DELETE');
+
+        $response->assertNoContent();
     }
 }
