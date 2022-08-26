@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
@@ -194,5 +195,51 @@ class PostTest extends TestCase
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, $token, 'DELETE');
 
         $response->assertNoContent();
+    }
+
+    public function test_deleteOtherPostFail()
+    {
+        $admin = UserUtility::admin();
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+
+        $this->actingAs($admin);
+        $post = Post::factory()->create();
+
+        $this->actingAs($user);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, $token, 'DELETE');
+
+        $response->assertForbidden();
+    }
+
+    public function test_createPostAsNonUserFail()
+    {
+        $response = $this->createPost('');
+        $response->assertUnauthorized();
+    }
+
+
+    public function test_updatePostAsNonUserFail()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        Auth::logout();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, '', 'PUT');
+        $response->assertUnauthorized();
+    }
+
+    public function test_deletePostAsNonUserFail()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        Auth::logout();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, '', 'DELETE');
+        $response->assertUnauthorized();
     }
 }
