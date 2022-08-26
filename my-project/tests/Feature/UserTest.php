@@ -30,7 +30,7 @@ class UserTest extends TestCase
         $this->assertEquals($payload[$this::ADMINKEY], $responseData[$this::ADMINKEY]);
     }
 
-    public function test_SetIsAdminFail()
+    public function test_SetIsAdminUnprocessable()
     {
         $user = UserUtility::user();
         $token = UserUtility::accessToken($user);
@@ -94,7 +94,7 @@ class UserTest extends TestCase
         $this->assertEquals($newName, $responseData['name']);
     }
 
-    public function test_updateOtherUserFail()
+    public function test_updateOtherUserForbidden()
     {
         $user = UserUtility::user();
         $adminUser = UserUtility::admin();
@@ -154,7 +154,7 @@ class UserTest extends TestCase
         $response->assertNoContent();
     }
 
-    public function test_userDeleteOtherFail()
+    public function test_userDeleteOtherForbidden()
     {
         $user = UserUtility::admin();
         $token = UserUtility::accessToken();

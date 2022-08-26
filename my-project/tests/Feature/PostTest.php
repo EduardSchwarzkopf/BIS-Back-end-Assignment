@@ -197,7 +197,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
     }
 
-    public function test_deleteOtherPostFail()
+    public function test_deleteOtherPostForbidden()
     {
         $admin = UserUtility::admin();
         $user = UserUtility::user();
@@ -212,14 +212,14 @@ class PostTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_createPostAsNonUserFail()
+    public function test_createPostAsNonUserUnauthorized()
     {
         $response = $this->createPost('');
         $response->assertUnauthorized();
     }
 
 
-    public function test_updatePostAsNonUserFail()
+    public function test_updatePostAsNonUserUnauthorized()
     {
         $user = UserUtility::user();
         $this->actingAs($user);
@@ -231,7 +231,7 @@ class PostTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function test_deletePostAsNonUserFail()
+    public function test_deletePostAsNonUserUnauthorized()
     {
         $user = UserUtility::user();
         $this->actingAs($user);
@@ -275,7 +275,7 @@ class PostTest extends TestCase
         $this->assertEquals($post->id, $data['id']);
     }
 
-    public function test_getTrashedPostsFail()
+    public function test_getTrashedPostsForbidden()
     {
         $user = UserUtility::user();
         $this->actingAs($user);
@@ -288,7 +288,7 @@ class PostTest extends TestCase
         $response->assertForbidden();
     }
 
-    public function test_getSingleTrashedPostFail()
+    public function test_getSingleTrashedPostForbidden()
     {
         $user = UserUtility::user();
         $this->actingAs($user);
