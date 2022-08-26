@@ -25,7 +25,7 @@ class PostRequest extends FormRequest
     {
         return [
             'subject' => ['required', 'max:64'],
-            'content'  => ['required']
+            'content'  => ['exclude_if:content,true|required']
         ];
     }
 }
