@@ -72,4 +72,25 @@ class PostTest extends TestCase
 
         $this->assertEquals($post->id, $postData['id']);
     }
+
+    public function test_maxSubjectLength()
+    {
+        $maxSubjectLength = 64;
+
+        $token = UserUtility::accessToken();
+
+        $payload = [
+            'subject' => fake()->text(200),
+            'description' => fake()->text(50),
+            'content' => fake()->text(300),
+        ];
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT, $token, 'POST', $payload);
+
+        $response->assertUnprocessable();
+
+        $message = $response->json('message');
+
+        $this->assertTrue(str_contains($message, $maxSubjectLength));
+    }
 }
