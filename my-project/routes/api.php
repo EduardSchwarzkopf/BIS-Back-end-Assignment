@@ -31,7 +31,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/posts/trashed/all/', [PostController::class, 'trashed']);
     Route::get('/posts/trashed/{id}', [PostController::class, 'trashedShow']);
     Route::delete('/posts/trashed/{id}', [PostController::class, 'forcedelete']);
-    Route::apiResource('comments', CommentController::class);
+    Route::post('/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::get('/comments/restore/{id}', [CommentController::class, 'restore']);
     Route::get('/comments/trashed/all/', [CommentController::class, 'trashed']);
     Route::get('/comments/trashed/{id}', [CommentController::class, 'trashedShow']);
@@ -44,3 +46,6 @@ Route::post('/register', [UserController::class, 'store']);
 
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{post}', [PostController::class, 'show']);
+
+Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/comments/{comment}', [CommentController::class, 'show']);
