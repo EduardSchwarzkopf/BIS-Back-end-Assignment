@@ -72,7 +72,15 @@ class UserTest extends TestCase
         $token = UserUtility::adminAccessToken();
         $user = UserUtility::user();
 
-        $this->updateUser($token, $user);
+        $newName = 'NewName';
+        $payload = ['name' => $newName];
+
+        $response = $this->updateUser($token, $user, $payload);
+
+        $response->assertOk();
+
+        $responseData = $response->json()['data'];
+        $this->assertEquals($newName, $responseData['name']);
     }
 
     public function test_updateUser()
@@ -80,19 +88,34 @@ class UserTest extends TestCase
         $user = UserUtility::user();
         $token = UserUtility::accessToken($user);
 
-        $this->updateUser($token, $user);
-    }
-
-    private function updateUser(string $accessToken, User $user): void
-    {
         $newName = 'NewName';
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $accessToken, 'PUT', [
-            'name' => $newName
-        ]);
+        $payload = ['name' => $newName];
+
+        $response = $this->updateUser($token, $user, $payload);
 
         $response->assertOk();
 
         $responseData = $response->json()['data'];
         $this->assertEquals($newName, $responseData['name']);
+    }
+
+    public function test_updateOtherUserFail()
+    {
+        $user = UserUtility::user();
+        $adminUser = UserUtility::admin();
+
+        $token = UserUtility::accessToken($user);
+
+        $newName = 'NewName';
+        $payload = ['name' => $newName];
+
+        $response = $this->updateUser($token, $adminUser, $payload);
+
+        $response->assertForbidden();
+    }
+
+    private function updateUser(string $accessToken, User $user, array $payload = []): TestResponse
+    {
+        return UserUtility::authApiRequest($this, '/users/' . $user->id, $accessToken, 'PUT', $payload);
     }
 }
