@@ -118,4 +118,25 @@ class UserTest extends TestCase
     {
         return UserUtility::authApiRequest($this, '/users/' . $user->id, $accessToken, 'PUT', $payload);
     }
+
+    public function test_generateNickname()
+    {
+        $surname = 'Depp';
+        $name = 'Johnny';
+
+        $payload = UserUtility::payload();
+        $payload['email'] = 'nickname@test.de';
+        $payload['name'] = $name;
+        $payload['meta_data']['surname'] = $surname;
+
+
+        $response = $this->post('/api/register', $payload);
+
+        $response->assertCreated();
+        $responseData = $response->json()['data'];
+        $responseNickname = $responseData['meta_data']['nickname'];
+
+        $expectedNickname = strtolower($surname . substr($name, 0, 3));
+        $this->assertEquals($expectedNickname, $responseNickname);
+    }
 }
