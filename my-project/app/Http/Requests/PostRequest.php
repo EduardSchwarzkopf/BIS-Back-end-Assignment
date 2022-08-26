@@ -24,8 +24,16 @@ class PostRequest extends FormRequest
     public function rules()
     {
         return [
-            'subject' => ['required', 'max:64'],
-            'content'  => ['exclude_if:content,true|required']
+            'subject' => 'required_if:content,=,null|string|max:64',
+            'content'  => 'required_if:content,=,null|string'
+        ];
+    }
+
+    public function filters()
+    {
+        return [
+            'subject' => 'trim|escape',
+            'content' => 'trim|escape'
         ];
     }
 }

@@ -13,7 +13,7 @@ class CommentRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,15 @@ class CommentRequest extends FormRequest
     public function rules()
     {
         return [
-            'post_id'  => ['required'],
-            'content'  => ['required', 'max:255']
+            'post_id'  => 'required_if:post_id,=,null|int',
+            'content'  => 'required_if:content,=,null|string|max:254'
+        ];
+    }
+
+    public function filters()
+    {
+        return [
+            'content' => 'trim|escape'
         ];
     }
 }
