@@ -25,7 +25,7 @@ class UserTest extends TestCase
 
         $response->assertOk();
 
-        $responseData = $response->json()['data'];
+        $responseData = $response->json('data');
 
         $this->assertEquals($payload[$this::ADMINKEY], $responseData[$this::ADMINKEY]);
     }
@@ -74,7 +74,7 @@ class UserTest extends TestCase
 
         $response->assertOk();
 
-        $responseData = $response->json()['data'];
+        $responseData = $response->json('data');
         $this->assertEquals($newName, $responseData['name']);
     }
 
@@ -90,7 +90,7 @@ class UserTest extends TestCase
 
         $response->assertOk();
 
-        $responseData = $response->json()['data'];
+        $responseData = $response->json('data');
         $this->assertEquals($newName, $responseData['name']);
     }
 
@@ -128,7 +128,7 @@ class UserTest extends TestCase
         $response = $this->post('/api/register', $payload);
 
         $response->assertCreated();
-        $responseData = $response->json()['data'];
+        $responseData = $response->json('data');
         $responseNickname = $responseData['meta_data']['nickname'];
 
         $expectedNickname = strtolower($surname . substr($name, 0, 3));
