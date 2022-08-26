@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('users', UserController::class);
     Route::post('/posts', [PostController::class, 'store']);
     Route::put('/posts/{post}', [PostController::class, 'update']);
-    Route::delete('/posts', [PostController::class, 'destroy']);
+    Route::delete('/posts/{post}', [PostController::class, 'destroy']);
     Route::get('/posts/restore/{id}', [PostController::class, 'restore']);
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
     Route::get('/posts/trashed/all/', [PostController::class, 'trashed']);
