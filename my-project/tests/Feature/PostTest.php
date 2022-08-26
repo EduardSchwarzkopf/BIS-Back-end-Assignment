@@ -3,14 +3,24 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class PostTest extends TestCase
 {
     use RefreshDatabase;
     const ENDPOINT = '/posts';
+
+
+    private function getPosts(string $postId = ''): TestResponse
+    {
+        return $this->get('/api' . $this::ENDPOINT . '/' . $postId, [
+            'Accept' => 'application/json',
+        ]);
+    }
 
     public function test_createPost()
     {
@@ -47,9 +57,7 @@ class PostTest extends TestCase
         $postCount = 10;
         Post::factory($postCount)->create();
 
-        $response = $this->get('/api' . $this::ENDPOINT, [
-            'Accept' => 'application/json',
-        ]);
+        $response = $this->getPosts();
 
         $response->assertOk();
 
@@ -62,9 +70,7 @@ class PostTest extends TestCase
     {
         $post = Post::factory()->create();
 
-        $response = $this->get('/api' . $this::ENDPOINT . '/' . $post->id, [
-            'Accept' => 'application/json',
-        ]);
+        $response = $this->getPosts($post->id);
 
         $response->assertOk();
 
@@ -92,5 +98,24 @@ class PostTest extends TestCase
         $message = $response->json('message');
 
         $this->assertTrue(str_contains($message, $maxSubjectLength));
+    }
+
+
+    public function test_expectedPostData()
+    {
+        $post = Post::factory()->create();
+
+        $response = $this->getPosts($post->id);
+
+        $data = $response->json();
+
+        $this->assertEquals($post->subject, $data['subject']);
+        $this->assertTrue((bool)strtotime($data['created_at'])); // is a valid date?
+        $this->assertEquals($post->description, $data['description']);
+
+        $user = User::find($post->user_id);
+        $dataUser = $data['user'];
+        $this->assertEquals($user->id, $dataUser['id']);
+        $this->assertEquals($user->name, $dataUser['name']);
     }
 }
