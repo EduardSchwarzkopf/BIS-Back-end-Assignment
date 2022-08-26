@@ -23,7 +23,9 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/logout', [ApiAuthController::class, 'logout'])->middleware('auth:web');
     Route::apiResource('users', UserController::class);
-    Route::apiResource('posts', PostController::class);
+    Route::post('/posts', [PostController::class, 'store']);
+    Route::put('/posts/{post}', [PostController::class, 'update']);
+    Route::delete('/posts', [PostController::class, 'destroy']);
     Route::get('/posts/restore/{id}', [PostController::class, 'restore']);
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
     Route::get('/posts/trashed/all/', [PostController::class, 'trashed']);
@@ -39,3 +41,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 // Public routes
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/register', [UserController::class, 'store']);
+
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('/posts/{post}', [PostController::class, 'show']);
