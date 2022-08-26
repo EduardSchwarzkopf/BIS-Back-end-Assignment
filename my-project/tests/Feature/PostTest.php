@@ -300,4 +300,35 @@ class PostTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_deleteTrashedPost()
+    {
+
+        $user = UserUtility::admin();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($admin), 'DELETE');
+
+        $response->assertNoContent();
+    }
+
+    public function test_deleteTrashedPostForbidden()
+    {
+
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($user), 'DELETE');
+
+        $response->assertForbidden();
+    }
 }
