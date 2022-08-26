@@ -17,8 +17,6 @@ class PostController extends Controller
      */
     public function index()
     {
-        $this->authorize('viewAny', Post::class);
-
         // make newest on top
         return Post::orderBy('created_at', 'desc')->paginate(10);
     }
@@ -44,7 +42,6 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $this->authorize('view', Post::class);
         return $post;
     }
 
@@ -57,7 +54,7 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
-        $this->authorize('update', Post::class);
+        $this->authorize('update', $request->user(), Post::class);
         $this->handleDescription($request);
         $post->update($request->all());
         return $post;
