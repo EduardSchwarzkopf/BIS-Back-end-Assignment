@@ -10,29 +10,24 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-
-    private $adminKey = 'is_admin';
+    const ENDPOINT = '/users';
+    const ADMINKEY = 'is_admin';
 
     public function test_SetIsAdmin()
     {
         $token = UserUtility::adminAccessToken();
 
-        $payload[$this->adminKey] = true;
+        $payload[$this::ADMINKEY] = true;
 
         $user =  User::factory()->create();
 
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'PUT', $payload);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'PUT', $payload);
 
         $response->assertOk();
 
         $responseData = $response->json()['data'];
 
-        $this->assertEquals($payload[$this->adminKey], $responseData[$this->adminKey]);
+        $this->assertEquals($payload[$this::ADMINKEY], $responseData[$this::ADMINKEY]);
     }
 
     public function test_SetIsAdminFail()
@@ -40,9 +35,9 @@ class UserTest extends TestCase
         $user = UserUtility::user();
         $token = UserUtility::accessToken($user);
 
-        $payload[$this->adminKey] = true;
+        $payload[$this::ADMINKEY] = true;
 
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'PUT', $payload);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'PUT', $payload);
 
         $response->assertUnprocessable();
     }
@@ -60,9 +55,9 @@ class UserTest extends TestCase
         ];
 
         foreach ($typeList as $type) {
-            $payload[$this->adminKey] = $type;
+            $payload[$this::ADMINKEY] = $type;
 
-            $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'PUT', $payload);
+            $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'PUT', $payload);
             $response->assertUnprocessable();
         }
     }
@@ -116,7 +111,7 @@ class UserTest extends TestCase
 
     private function updateUser(string $accessToken, User $user, array $payload = []): TestResponse
     {
-        return UserUtility::authApiRequest($this, '/users/' . $user->id, $accessToken, 'PUT', $payload);
+        return UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $accessToken, 'PUT', $payload);
     }
 
     public function test_generateNickname()
@@ -145,7 +140,7 @@ class UserTest extends TestCase
         $user = UserUtility::user();
         $token = UserUtility::accessToken($user);
 
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'DELETE');
 
         $response->assertNoContent();
     }
@@ -155,7 +150,7 @@ class UserTest extends TestCase
         $user = UserUtility::user();
         $token = UserUtility::adminAccessToken();
 
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'DELETE');
         $response->assertNoContent();
     }
 
@@ -164,7 +159,7 @@ class UserTest extends TestCase
         $user = UserUtility::admin();
         $token = UserUtility::accessToken();
 
-        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $user->id, $token, 'DELETE');
         $response->assertForbidden();
     }
 }
