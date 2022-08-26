@@ -17,6 +17,8 @@ class PostController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Post::class);
+
         // make newest on top
         return Post::orderBy('created_at', 'desc')->paginate(10);
     }
@@ -29,6 +31,7 @@ class PostController extends Controller
      */
     public function store(PostRequest $request)
     {
+        $this->authorize('create', Post::class);
         $this->handleDescription($request);
         return Post::create($request->all());
     }
@@ -41,6 +44,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
+        $this->authorize('view', Post::class);
         return $post;
     }
 
@@ -53,6 +57,7 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post)
     {
+        $this->authorize('update', Post::class);
         $this->handleDescription($request);
         $post->update($request->all());
         return $post;
@@ -79,6 +84,7 @@ class PostController extends Controller
      */
     public function search($subject)
     {
+        $this->authorize('view', Post::class);
         $postList = Post::where('subject', 'like', '%' . $subject . '%')->get();
         return PostResource::collection($postList);
     }
