@@ -73,32 +73,20 @@ class UserUtility
     {
         $method = strtoupper($method);
 
-        $response = null;
         $apiEndpoint = '/api' . $endpoint;
         $headers = [
             'Accept' => 'application/json',
             'Authorization' => "Bearer $accessToken"
         ];
 
-        switch ($method) {
-            case 'GET':
-                $response = $test->get($apiEndpoint, $headers);
 
-            case 'POST':
-                $response = $test->post($apiEndpoint, $payload, $headers);
-                break;
-
-            case 'PUT':
-                $response = $test->put($apiEndpoint, $payload, $headers);
-                break;
-
-            case 'DELETE':
-                $response = $test->delete($apiEndpoint, $payload, $headers);
-                break;
-
-            default:
-                break;
-        }
+        $response = match ($method) {
+            'GET' => $test->get($apiEndpoint, $headers),
+            'POST' => $test->post($apiEndpoint, $payload, $headers),
+            'PUT' => $test->put($apiEndpoint, $payload, $headers),
+            'DELETE' => $test->delete($apiEndpoint, $payload, $headers),
+            default => null,
+        };
 
         return $response;
     }
