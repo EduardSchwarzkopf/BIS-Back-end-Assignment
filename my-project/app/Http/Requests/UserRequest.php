@@ -27,26 +27,12 @@ class UserRequest extends FormRequest
     public function rules()
     {
 
-        switch ($this->method()) {
-            case 'POST': {
-                    $user = $this->user();
-                    return [
-                        'name' => 'required',
-                        'email' => 'required|email|unique:users',
-                        'password' => [Rules\Password::defaults(), 'required'],
-                        'is_admin' =>  ['boolean', Rule::prohibitedIf($user == null || $user->is_admin == false)]
-                    ];
-                }
-            case 'PUT':
-            case 'PATCH': {
-                    return [
-                        'password' => Rules\Password::defaults(),
-                        'email' => Rule::unique('users')->ignore($this->route()->user->id),
-                        'is_admin' =>  ['boolean', Rule::prohibitedIf($this->user()->is_admin == false)] // we always expect a user on PUT/PATCH
-                    ];
-                }
-            default:
-                break;
-        }
+        $user = $this->user();
+        return [
+            'name' => 'required_if:content,=,null|string',
+            'email' => 'required_if:content,=,null|string|email|unique:users',
+            'password' => [Rules\Password::defaults(), 'required_if:content,=,null|string'],
+            'is_admin' =>  ['boolean', Rule::prohibitedIf($user == null || $user->is_admin == false)]
+        ];
     }
 }
