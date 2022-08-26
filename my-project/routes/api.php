@@ -30,7 +30,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/posts/search/{subject}', [PostController::class, 'search']);
     Route::get('/posts/trashed/all/', [PostController::class, 'trashed']);
     Route::get('/posts/trashed/{id}', [PostController::class, 'trashedShow']);
-    Route::delete('/posts/forcedelete/{id}', [PostController::class, 'forcedelete']);
+    Route::delete('/posts/trashed/{id}', [PostController::class, 'forcedelete']);
     Route::apiResource('comments', CommentController::class);
     Route::get('/comments/restore/{id}', [CommentController::class, 'restore']);
     Route::get('/comments/trashed/all/', [CommentController::class, 'trashed']);
