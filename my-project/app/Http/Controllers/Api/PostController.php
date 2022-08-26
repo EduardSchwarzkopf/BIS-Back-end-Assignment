@@ -31,7 +31,7 @@ class PostController extends Controller
     {
         $this->authorize('create', Post::class);
         $this->handleDescription($request);
-        return Post::create($request->all());
+        return Post::create($request->validated());
     }
 
     /**
@@ -56,7 +56,7 @@ class PostController extends Controller
     {
         $this->authorize('update', $request->user(), Post::class);
         $this->handleDescription($request);
-        $post->update($request->all());
+        $post->update($request->validated());
         return $post;
     }
 

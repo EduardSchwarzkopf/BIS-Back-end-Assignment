@@ -34,7 +34,7 @@ class UserController extends Controller
         $request->merge(
             ['password' => bcrypt($request->password)]
         );
-        $user = User::create($request->all());
+        $user = User::create($request->validated());
 
         $metaData = is_array($request->meta_data) ? $request->meta_data : [];
 
@@ -99,7 +99,7 @@ class UserController extends Controller
             );
         }
 
-        $user->update($request->all());
+        $user->update($request->validated());
 
         return new UserResource($user);
     }
