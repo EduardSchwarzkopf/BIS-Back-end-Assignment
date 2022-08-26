@@ -20,6 +20,7 @@ class PostFactory extends Factory
             'subject' => fake()->text(20),
             'description' => fake()->text(50),
             'content' => fake()->text(300),
+            'created_at' => fake()->date()
         ];
     }
 }
