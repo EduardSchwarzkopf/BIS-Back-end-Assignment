@@ -25,7 +25,8 @@ class PostRequest extends FormRequest
     {
         return [
             'subject' => 'required_if:content,=,null|string|max:64',
-            'content'  => 'required_if:content,=,null|string'
+            'content'  => 'required_if:content,=,null|string',
+            'description'  => 'string'
         ];
     }
 
@@ -33,7 +34,8 @@ class PostRequest extends FormRequest
     {
         return [
             'subject' => 'trim|escape',
-            'content' => 'trim|escape'
+            'content' => 'trim|escape',
+            'description'  => 'trim|escape'
         ];
     }
 }
