@@ -81,12 +81,12 @@
 							"formdata": [
 								{
 									"key": "email",
-									"value": "test@test.de",
+									"value": "user@test.de",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "test@test123!",
+									"value": "password",
 									"type": "text"
 								}
 							]
@@ -153,7 +153,7 @@
 					"response": []
 				},
 				{
-					"name": "User Register",
+					"name": "User Register (auth required)",
 					"event": [
 						{
 							"listen": "test",
@@ -186,7 +186,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"Test1233\",\n    \"email\": \"test@test.de\",\n    \"password\": \"test@test123!\",\n    \"is_admin\": false,\n    \"meta_data\": {\n        \"surname\": \"Depp\",\n        \"phone\": \"test_phone\",\n        \"address\": \"test_address\",\n        \"city\": \"test_city\",\n        \"state\": \"test_state\",\n        \"zip\": \"test_zip\"\n    }\n}",
+							"raw": "{\n    \"name\": \"Test1233\",\n    \"email\": \"test@test.dee\",\n    \"password\": \"password\",\n    \"meta_data\": {\n        \"surname\": \"Depp\",\n        \"phone\": \"test_phone\",\n        \"address\": \"test_address\",\n        \"city\": \"test_city\",\n        \"state\": \"test_state\",\n        \"zip\": \"test_zip\"\n    }\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -206,13 +206,13 @@
 					"response": []
 				},
 				{
-					"name": "User Logout",
+					"name": "User Register admin (auth as admin required)",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"JWT\", pm.response.json().access_token);"
+									""
 								],
 								"type": "text/javascript"
 							}
@@ -238,16 +238,175 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": []
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test123\",\n    \"email\": \"admin@test.de\",\n    \"password\": \"password\",\n    \"is_admin\": true,\n    \"meta_data\": {\n        \"surname\": \"Depp\",\n        \"phone\": \"test_phone\",\n        \"address\": \"test_address\",\n        \"city\": \"test_city\",\n        \"state\": \"test_state\",\n        \"zip\": \"test_zip\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
-							"raw": "{{URL}}/logout",
+							"raw": "{{URL}}/users",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"logout"
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Register (no auth)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test1233\",\n    \"email\": \"user@test.de\",\n    \"password\": \"password\",\n    \"meta_data\": {\n        \"surname\": \"Depp\",\n        \"phone\": \"test_phone\",\n        \"address\": \"test_address\",\n        \"city\": \"test_city\",\n        \"state\": \"test_state\",\n        \"zip\": \"test_zip\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users/6",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User delete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users/6",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"6"
 							]
 						}
 					},
@@ -322,7 +481,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"subject\": \"My Blog Post\",\n    \"content\": \"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus\"\n}",
+							"raw": "{\n    \"subject\": \"My Blog Post\",\n    \"description\": \"My custom description\",\n    \"content\": \"Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -336,6 +495,60 @@
 							],
 							"path": [
 								"posts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subject\": \"New Subject\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/posts/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"posts",
+								"1"
 							]
 						}
 					},
@@ -359,14 +572,7 @@
 					},
 					"request": {
 						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT}}",
-									"type": "string"
-								}
-							]
+							"type": "noauth"
 						},
 						"method": "GET",
 						"header": [
@@ -414,16 +620,6 @@
 						"disableBodyPruning": true
 					},
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{JWT}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [
 							{
@@ -442,13 +638,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/posts/2",
+							"raw": "{{URL}}/posts/1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"posts",
-								"2"
+								"1"
 							]
 						}
 					},
@@ -878,6 +1074,60 @@
 							],
 							"path": [
 								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Comment update",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"post_id\": 1,\n    \"content\": \"New Comment\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/comments/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"comments",
+								"1"
 							]
 						}
 					},
