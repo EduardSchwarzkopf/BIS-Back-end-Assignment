@@ -8,15 +8,21 @@ use Tests\TestCase;
 
 class PostTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
+    use RefreshDatabase;
+    const ENDPOINT = '/posts';
 
-        $response->assertStatus(200);
+    public function test_createPost()
+    {
+
+        $token = UserUtility::accessToken();
+
+        $payload = [
+            'subject' => fake()->text(20),
+            'description' => fake()->text(50),
+            'content' => fake()->text(300),
+        ];
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT, $token, 'POST', $payload);
+        $response->assertCreated();
     }
 }
