@@ -139,4 +139,32 @@ class UserTest extends TestCase
         $expectedNickname = strtolower($surname . substr($name, 0, 3));
         $this->assertEquals($expectedNickname, $responseNickname);
     }
+
+    public function test_deleteSelf()
+    {
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+
+        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+
+        $response->assertNoContent();
+    }
+
+    public function test_adminDeleteUser()
+    {
+        $user = UserUtility::user();
+        $token = UserUtility::adminAccessToken();
+
+        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+        $response->assertNoContent();
+    }
+
+    public function test_userDeleteOtherFail()
+    {
+        $user = UserUtility::admin();
+        $token = UserUtility::accessToken();
+
+        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'DELETE');
+        $response->assertForbidden();
+    }
 }
