@@ -147,4 +147,33 @@ class CommentTest extends TestCase
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $comment->id, '', 'PUT');
         $response->assertUnauthorized();
     }
+
+    public function test_deleteComment()
+    {
+        $comment = $this->createCommentAsUser();
+
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $reponse = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $comment->id, UserUtility::accessToken($user), 'DELETE');
+
+        $reponse->assertNoContent();
+
+        $this->assertEquals(0, Comment::count());
+        $this->assertEquals(1, Comment::withTrashed()->count());
+    }
+
+    public function test_deleteCommentForbidden()
+    {
+        $commentResponse = $this->createComment(UserUtility::admin());
+        $commentData = $commentResponse->json();
+        $commentId = $commentData['id'];
+
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $reponse = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $commentId, UserUtility::accessToken($user), 'DELETE');
+
+        $reponse->assertForbidden();
+    }
 }
