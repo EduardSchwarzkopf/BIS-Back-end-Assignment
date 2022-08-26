@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class UserTest extends TestCase
@@ -64,5 +65,34 @@ class UserTest extends TestCase
             $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $token, 'PUT', $payload);
             $response->assertUnprocessable();
         }
+    }
+
+    public function test_adminUpdatesUser()
+    {
+        $token = UserUtility::adminAccessToken();
+        $user = UserUtility::user();
+
+        $this->updateUser($token, $user);
+    }
+
+    public function test_updateUser()
+    {
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+
+        $this->updateUser($token, $user);
+    }
+
+    private function updateUser(string $accessToken, User $user): void
+    {
+        $newName = 'NewName';
+        $response = UserUtility::authApiRequest($this, '/users/' . $user->id, $accessToken, 'PUT', [
+            'name' => $newName
+        ]);
+
+        $response->assertOk();
+
+        $responseData = $response->json()['data'];
+        $this->assertEquals($newName, $responseData['name']);
     }
 }
