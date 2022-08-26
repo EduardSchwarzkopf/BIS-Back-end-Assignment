@@ -67,7 +67,7 @@ class UserController extends Controller
             return;
         }
 
-        $metaDataList['nickname'] = $metaDataList['surname'] . substr($name, 0, 3);
+        $metaDataList['nickname'] = strtolower($metaDataList['surname'] . substr($name, 0, 3));
     }
 
     /**
