@@ -24,6 +24,7 @@ class CommentFactory extends Factory
         return [
             'post_id' => Post::all()->random()->id,
             'content' => fake()->text(300),
+            'created_at' => fake()->date()
         ];
     }
 }
