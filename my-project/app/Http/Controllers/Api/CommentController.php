@@ -27,7 +27,7 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
-        return Comment::create($request->all());
+        return Comment::create($request->validate($request->rules()));
     }
 
     /**
@@ -51,7 +51,8 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
-        $comment->update($request->all());
+        $comment->update($request->validate($request->rules()));
+        return $comment;
     }
 
     /**
