@@ -18,12 +18,8 @@ class Comment extends Model
 
     protected static function booted()
     {
-        static::creating(function ($post) {
-            $post->user_id = Auth::id();
-
-            if (app()->runningInConsole()) {
-                $post->user_id = User::all('id')->first()->id;
-            }
+        static::creating(function ($comment) {
+            $comment->user_id = Auth::id();
         });
     }
 
