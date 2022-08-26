@@ -10,6 +10,55 @@ class PostPolicy
 {
     use HandlesAuthorization;
 
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAny(User $user)
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user, Post $model)
+    {
+        return true;
+    }
+
+
+    /**
+     * Determine whether the user can create the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function create(User $user)
+    {
+        return auth()->check();
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function update(User $user, Post $model)
+    {
+        return $user->is_admin || (auth()->check() && $model->user_id == auth()->id());
+    }
+
     /**
      * Determine whether the user can restore the model.
      *
