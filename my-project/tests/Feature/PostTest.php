@@ -242,4 +242,62 @@ class PostTest extends TestCase
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, '', 'DELETE');
         $response->assertUnauthorized();
     }
+
+    public function test_getTrashedPosts()
+    {
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken($admin));
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+    }
+
+    public function test_getSingleTrashedPost()
+    {
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($admin));
+
+        $response->assertOk();
+
+        $data = $response->json();
+        $this->assertEquals($post->id, $data['id']);
+    }
+
+    public function test_getTrashedPostsFail()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken($user));
+
+        $response->assertForbidden();
+    }
+
+    public function test_getSingleTrashedPostFail()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($user));
+
+        $response->assertForbidden();
+    }
 }
