@@ -45,7 +45,7 @@ class PostTest extends TestCase
     public function test_getAllPosts()
     {
         $postCount = 10;
-        $post = Post::factory($postCount)->create();
+        Post::factory($postCount)->create();
 
         $response = $this->get('/api' . $this::ENDPOINT, [
             'Accept' => 'application/json',
