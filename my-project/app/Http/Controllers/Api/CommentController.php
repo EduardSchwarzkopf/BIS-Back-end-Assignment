@@ -27,6 +27,7 @@ class CommentController extends Controller
      */
     public function store(CommentRequest $request)
     {
+        $this->authorize('create', Comment::class);
         return Comment::create($request->validated());
     }
 
@@ -38,7 +39,6 @@ class CommentController extends Controller
      */
     public function show(Comment $comment)
     {
-        //
         return $comment;
     }
 
@@ -51,6 +51,7 @@ class CommentController extends Controller
      */
     public function update(CommentRequest $request, Comment $comment)
     {
+        $this->authorize('update', $comment);
         $comment->update($request->validated());
         return $comment;
     }
@@ -63,6 +64,7 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        $this->authorize('delete', $comment);
         $comment->delete();
         return response()->noContent();
     }
@@ -74,7 +76,7 @@ class CommentController extends Controller
      */
     public function trashedShow(int $id)
     {
-        $this->authorize('viewTrashed', Post::class);
+        $this->authorize('viewTrashed', Comment::class);
         return  Comment::onlyTrashed()->find($id);
     }
 
@@ -85,7 +87,7 @@ class CommentController extends Controller
      */
     public function trashed()
     {
-        $this->authorize('viewTrashed', Post::class);
+        $this->authorize('viewTrashed', Comment::class);
         return  Comment::onlyTrashed()->paginate(10);
     }
 
