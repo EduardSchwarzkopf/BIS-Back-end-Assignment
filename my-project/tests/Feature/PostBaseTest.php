@@ -37,11 +37,21 @@ class PostBaseTest extends TestCase
         return UserUtility::authApiRequest($this, $this::ENDPOINT, $accessToken, 'POST', $payload);
     }
 
+    protected function createPostAsUser(): Post
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        Auth::logout();
+
+        return $post;
+    }
+
     public function test_createPost()
     {
 
         $token = UserUtility::accessToken();
-
 
         $response = $this->createPost($token);
         $response->assertCreated();
@@ -187,12 +197,8 @@ class PostBaseTest extends TestCase
 
     public function test_updatePostAsNonUserUnauthorized()
     {
-        $user = UserUtility::user();
-        $this->actingAs($user);
 
-        $post = Post::factory()->create();
-        Auth::logout();
-
+        $post = $this->createPostAsUser();
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, '', 'PUT');
         $response->assertUnauthorized();
     }

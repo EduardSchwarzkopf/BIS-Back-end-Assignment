@@ -37,11 +37,7 @@ class PostDeleteTest extends PostBaseTest
 
     public function test_deletePostAsNonUserUnauthorized()
     {
-        $user = UserUtility::user();
-        $this->actingAs($user);
-
-        $post = Post::factory()->create();
-        Auth::logout();
+        $post = $this->createPostAsUser();
 
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, '', 'DELETE');
         $response->assertUnauthorized();
@@ -81,26 +77,20 @@ class PostDeleteTest extends PostBaseTest
 
     public function test_getTrashedPostsForbidden()
     {
-        $user = UserUtility::user();
-        $this->actingAs($user);
-
-        $post = Post::factory()->create();
+        $post = $this->createPostAsUser();
         $post->delete();
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken($user));
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken());
 
         $response->assertForbidden();
     }
 
     public function test_getSingleTrashedPostForbidden()
     {
-        $user = UserUtility::user();
-        $this->actingAs($user);
-
-        $post = Post::factory()->create();
+        $post = $this->createPostAsUser();
         $post->delete();
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($user));
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken());
 
         $response->assertForbidden();
     }
@@ -125,13 +115,10 @@ class PostDeleteTest extends PostBaseTest
     public function test_deleteTrashedPostForbidden()
     {
 
-        $user = UserUtility::user();
-        $this->actingAs($user);
-
-        $post = Post::factory()->create();
+        $post = $this->createPostAsUser();
         $post->delete();
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($user), 'DELETE');
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken(), 'DELETE');
 
         $response->assertForbidden();
     }
@@ -155,15 +142,12 @@ class PostDeleteTest extends PostBaseTest
 
     public function test_restoreTrashedPostForbidden()
     {
-        $user = UserUtility::user();
-        $this->actingAs($user);
-
-        $post = Post::factory()->create();
+        $post = $this->createPostAsUser();
         $post->delete();
 
         $this->assertCount(0, Post::all());
 
-        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $post->id, UserUtility::accessToken($user));
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $post->id, UserUtility::accessToken());
 
         $response->assertForbidden();
         $this->assertCount(0, Post::all());
