@@ -31,10 +31,10 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $request->merge(
-            ['password' => bcrypt($request->password)]
-        );
-        $user = User::create($request->validated());
+        $fields = $request->validated();
+        $fields['password'] = bcrypt($request->password);
+
+        $user = User::create($fields);
 
         $metaData = is_array($request->meta_data) ? $request->meta_data : [];
 
@@ -93,13 +93,12 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
+        $fields = $request->validated();
         if ($request->password) {
-            $request->merge(
-                ['password' => bcrypt($request->password)]
-            );
+            $fields['password'] = bcrypt($request->password);
         }
 
-        $user->update($request->validated());
+        $user->update($fields);
 
         return new UserResource($user);
     }
