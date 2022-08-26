@@ -1231,12 +1231,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/comment/1",
+							"raw": "{{URL}}/comments/1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"comment",
+								"comments",
 								"1"
 							]
 						}
@@ -1285,13 +1285,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/comment/forcedelete/1",
+							"raw": "{{URL}}/comments/trashed/1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"comment",
-								"forcedelete",
+								"comments",
+								"trashed",
 								"1"
 							]
 						}
@@ -1343,12 +1343,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/comment/trashed/all",
+							"raw": "{{URL}}/comments/trashed/all",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"comment",
+								"comments",
 								"trashed",
 								"all"
 							]
@@ -1401,12 +1401,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{URL}}/posts/trashed/1",
+							"raw": "{{URL}}/comments/trashed/1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
-								"posts",
+								"comments",
 								"trashed",
 								"1"
 							]
