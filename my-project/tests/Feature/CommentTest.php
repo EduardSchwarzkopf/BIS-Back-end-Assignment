@@ -5,6 +5,7 @@ namespace Tests\Feature;
 
 use App\Models\Comment;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
@@ -24,13 +25,13 @@ class CommentTest extends TestCase
         ]);
     }
 
-    protected function createComment(string $accessToken, array $payload = []): TestResponse
+    protected function createComment(User $user, array $payload = []): TestResponse
     {
 
         $post = Post::all()->first();
 
         if (Post::count() == 0) {
-            $this->actingAs(UserUtility::user());
+            $this->actingAs($user);
             $post = Post::factory()->create();
         }
 
@@ -41,7 +42,7 @@ class CommentTest extends TestCase
             ];
         }
 
-        return UserUtility::authApiRequest($this, $this::ENDPOINT, $accessToken, 'POST', $payload);
+        return UserUtility::authApiRequest($this, $this::ENDPOINT, UserUtility::accessToken($user), 'POST', $payload);
     }
 
     protected function createCommentAsUser(): Comment
@@ -58,9 +59,7 @@ class CommentTest extends TestCase
     public function test_createComment()
     {
 
-        $token = UserUtility::accessToken();
-
-        $response = $this->createComment($token);
+        $response = $this->createComment(UserUtility::user());
         $response->assertCreated();
     }
 
@@ -117,7 +116,7 @@ class CommentTest extends TestCase
             'content' => fake()->regexify('[A-Za-z0-9]{' . $maxContentLength + 1 . '}'),
         ];
 
-        $response = $this->createComment($token, $payload);
+        $response = $this->createComment($user, $payload);
 
         $response->assertUnprocessable();
 
