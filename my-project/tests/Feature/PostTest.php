@@ -197,6 +197,21 @@ class PostTest extends TestCase
         $response->assertNoContent();
     }
 
+    public function test_adminDeleteOtherPosts()
+    {
+        $user = UserUtility::user();
+
+        $this->actingAs($user);
+        $post = Post::factory()->create();
+
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $post->id, UserUtility::adminAccessToken($admin), 'DELETE');
+
+        $response->assertNoContent();
+    }
+
     public function test_deleteOtherPostForbidden()
     {
         $admin = UserUtility::admin();
@@ -330,5 +345,38 @@ class PostTest extends TestCase
         $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $post->id, UserUtility::accessToken($user), 'DELETE');
 
         $response->assertForbidden();
+    }
+
+    public function test_restoreTrashedPost()
+    {
+        $user = UserUtility::admin();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $this->assertCount(0, Post::all());
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $post->id, UserUtility::accessToken($user));
+
+        $response->assertOk();
+        $this->assertCount(1, Post::all());
+    }
+
+
+    public function test_restoreTrashedPostForbidden()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+
+        $this->assertCount(0, Post::all());
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $post->id, UserUtility::accessToken($user));
+
+        $response->assertForbidden();
+        $this->assertCount(0, Post::all());
     }
 }
