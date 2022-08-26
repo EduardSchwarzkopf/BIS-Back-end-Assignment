@@ -53,9 +53,9 @@ class PostTest extends TestCase
 
         $response->assertOk();
 
-        $postData = $response->json();
+        $postData = $response->json('data');
 
-        $this->assertEquals($postCount, count($postData['data']));
+        $this->assertEquals($postCount, count($postData));
     }
 
     public function test_getSinglePost()
