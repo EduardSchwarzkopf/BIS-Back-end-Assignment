@@ -25,7 +25,7 @@ class CommentRequest extends FormRequest
     {
         return [
             'post_id'  => 'required_if:post_id,=,null|int',
-            'content'  => 'required_if:content,=,null|string|max:254'
+            'content'  => 'required_if:content,=,null|string|max:255'
         ];
     }
 
