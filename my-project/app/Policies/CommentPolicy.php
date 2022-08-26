@@ -62,9 +62,9 @@ class CommentPolicy
      * @param  \App\Models\User  $user
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user)
+    public function delete(User $user, Comment $model)
     {
-        return $user->is_admin;
+        return $user->is_admin || (auth()->check() && $model->user_id == auth()->id());
     }
 
     /**
