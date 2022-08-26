@@ -70,7 +70,6 @@ class CommentTest extends TestCase
         $this->actingAs($user);
 
         $comment = Comment::factory()->create();
-        $comment->user_id;
 
         $content = 'my new comment';
         $payload = ['content' => $content];
@@ -81,6 +80,26 @@ class CommentTest extends TestCase
 
         $commentData = $response->json();
         $this->assertEquals($content, $commentData['content']);
+    }
+
+
+
+    public function test_updateCommentForbidden()
+    {
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $comment = Comment::factory()->create();
+
+        $content = 'my new comment';
+        $payload = ['content' => $content];
+
+        $user = UserUtility::user();
+        $this->actingAs($user);
+        $token = UserUtility::accessToken($user);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $comment->id, $token, 'PUT', $payload);
+
+        $response->assertForbidden();
     }
 
     public function test_getAllComments()
