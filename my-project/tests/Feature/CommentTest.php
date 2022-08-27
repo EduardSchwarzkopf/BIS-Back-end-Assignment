@@ -195,4 +195,149 @@ class CommentTest extends TestCase
 
         $reponse->assertForbidden();
     }
+
+    public function test_getTrashedComments()
+    {
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $comment = Comment::factory()->create();
+        $comment->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken($admin));
+
+        $response->assertOk();
+
+        $data = $response->json('data');
+        $this->assertCount(1, $data);
+    }
+
+    public function test_getSingleTrashedComment()
+    {
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $comment = Comment::factory()->create();
+        $comment->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $comment->id, UserUtility::accessToken($admin));
+
+        $response->assertOk();
+
+        $data = $response->json();
+        $this->assertEquals($comment->id, $data['id']);
+    }
+
+    public function test_getTrashedCommentsForbidden()
+    {
+        $comment = $this->createCommentAsUser();
+        $comment->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/all', UserUtility::accessToken());
+
+        $response->assertForbidden();
+    }
+
+    public function test_getSingleTrashedCommentForbidden()
+    {
+        $comment = $this->createCommentAsUser();
+        $comment->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $comment->id, UserUtility::accessToken());
+
+        $response->assertForbidden();
+    }
+
+    public function test_deleteTrashedComment()
+    {
+
+        $user = UserUtility::admin();
+        $this->actingAs($user);
+
+        $comment = Comment::factory()->create();
+        $comment->delete();
+
+        $admin = UserUtility::admin();
+        $this->actingAs($admin);
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $comment->id, UserUtility::accessToken($admin), 'DELETE');
+
+        $response->assertNoContent();
+    }
+
+    public function test_deleteTrashedCommentForbidden()
+    {
+
+        $comment = $this->createCommentAsUser();
+        $comment->delete();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/trashed/' . $comment->id, UserUtility::accessToken(), 'DELETE');
+
+        $response->assertForbidden();
+    }
+
+    public function test_restoreTrashedComment()
+    {
+        $user = UserUtility::admin();
+        $this->actingAs($user);
+
+        $comment = Comment::factory()->create();
+        $comment->delete();
+
+        $this->assertCount(0, Comment::all());
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $comment->id, UserUtility::accessToken($user));
+
+        $response->assertOk();
+        $this->assertCount(1, Comment::all());
+    }
+
+
+    public function test_restoreTrashedCommentForbidden()
+    {
+        $comment = $this->createCommentAsUser();
+        $comment->delete();
+
+        $this->assertCount(0, Comment::all());
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/restore/' . $comment->id, UserUtility::accessToken());
+
+        $response->assertForbidden();
+        $this->assertCount(0, Comment::all());
+    }
+
+    public function test_deleteOtherCommentForbidden()
+    {
+        $admin = UserUtility::admin();
+        $user = UserUtility::user();
+        $token = UserUtility::accessToken($user);
+
+        $this->actingAs($admin);
+        $comment = Comment::factory()->create();
+
+        $this->actingAs($user);
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT . '/' . $comment->id, $token, 'DELETE');
+
+        $response->assertForbidden();
+    }
+
+    public function test_createCommentAsNonUserUnauthorized()
+    {
+
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+
+        $payload = [
+            'post_id' => $post->id,
+            'content' => fake()->text(50),
+        ];
+
+        Auth::logout();
+
+        $response = UserUtility::authApiRequest($this, $this::ENDPOINT, '', 'POST', $payload);
+
+        $response->assertUnauthorized();
+    }
 }
