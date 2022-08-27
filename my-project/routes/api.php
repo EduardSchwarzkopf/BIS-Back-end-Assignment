@@ -37,7 +37,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/comments/restore/{id}', [CommentController::class, 'restore']);
     Route::get('/comments/trashed/all/', [CommentController::class, 'trashed']);
     Route::get('/comments/trashed/{id}', [CommentController::class, 'trashedShow']);
-    Route::delete('/comments/forcedelete/{id}', [CommentController::class, 'forcedelete']);
+    Route::delete('/comments/trashed/{id}', [CommentController::class, 'forcedelete']);
 });
 
 // Public routes
