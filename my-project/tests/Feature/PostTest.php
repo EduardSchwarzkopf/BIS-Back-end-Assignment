@@ -368,4 +368,19 @@ class PostTestBase extends TestCase
         $response = $this->createPost('');
         $response->assertUnauthorized();
     }
+
+    public function test_autoPruneDeletedPosts()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $post = Post::factory()->create();
+        $post->delete();
+        $post->create_at = now()->subHours(5);
+
+        $this->artisan('model:prune');
+
+
+        $this->assertEquals(0, Post::withTrashed()->count());
+    }
 }
