@@ -10,6 +10,9 @@ use Tests\TestCase;
 
 class UserTest extends TestCase
 {
+
+    use RefreshDatabase;
+
     const ENDPOINT = '/users';
     const ADMINKEY = 'is_admin';
 
