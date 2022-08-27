@@ -340,4 +340,19 @@ class CommentTest extends TestCase
 
         $response->assertUnauthorized();
     }
+
+
+    public function test_autoPruneDeletedComments()
+    {
+        $user = UserUtility::user();
+        $this->actingAs($user);
+
+        $comment = Comment::factory()->create();
+        $comment->delete();
+        $comment->create_at = now()->subHours(5);
+
+        $this->artisan('model:prune');
+
+        $this->assertEquals(0, Comment::withTrashed()->count());
+    }
 }
