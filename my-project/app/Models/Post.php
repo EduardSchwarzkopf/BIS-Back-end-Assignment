@@ -32,6 +32,14 @@ class Post extends Model
 
             $post->user_id = Auth::id();
         });
+
+        static::deleting(function ($post) {
+            $post->comments()->delete();
+        });
+
+        static::restoring(function ($post) {
+            $post->comments()->restore();
+        });
     }
 
     public function comments()
