@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class AuthTest extends TestCase
+class ApiAuthTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_UserRegistration()
     {
         $response = $this->post('/api/register', UserUtility::payload());
@@ -14,8 +17,10 @@ class AuthTest extends TestCase
 
     public function test_UserLoginFailed()
     {
+        $user = UserUtility::user();
+
         $response = $this->post('/api/login', [
-            'email' => UserUtility::EMAIL,
+            'email' => $user->email,
             'password' => "wrongPassword"
         ]);
 
@@ -25,13 +30,14 @@ class AuthTest extends TestCase
 
     public function test_UserLogin()
     {
+        $user = UserUtility::user();
 
-        $loginResponse = $this->post('/api/login', [
-            'email' => UserUtility::EMAIL,
+        $response = $this->post('/api/login', [
+            'email' => $user->email,
             'password' => UserUtility::PASSWORD
         ]);
 
-        $loginResponse->assertCreated();
+        $response->assertCreated();
     }
 
     public function test_UpdatePasswordAndLogin()
