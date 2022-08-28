@@ -2,9 +2,9 @@
 
 This is a demo using Docker and Laravel. Data is stored here permanently
 
-## How to run
+## Setup
 
-1. Install docker
+1. Install `docker` and `docker-compose`
 2. clone this project
 3. cd into the folder
 4. run `docker-compose up -d`

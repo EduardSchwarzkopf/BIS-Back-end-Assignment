@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: laravel
+        uid: 1000
+      context: ./my-project
+      dockerfile: Dockerfile
+    image: blog
+    container_name: blog-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    environment:
+      - DB_HOST=mariadb
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_DATABASE=laravel
+    volumes:
+      - ./my-project:/var/www
+    networks:
+      - blog
+
+  mariadb:
+    image: mariadb:10.6
+    container_name: blog-db
+    restart: unless-stopped
+    environment:
+      - MARIADB_USER=root
+      - MARIADB_DATABASE=laravel
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=yes
+      - SERVICE_TAGS=dev
+      - SERVICE_NAME=mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - blog
+
+  nginx:
+    image: nginx:alpine
+    container_name: blog-nginx
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./my-project:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - blog
+
+networks:
+  blog:
+    driver: bridge
