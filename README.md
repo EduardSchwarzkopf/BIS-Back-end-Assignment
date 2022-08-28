@@ -16,9 +16,10 @@ This is a demo using Docker and Laravel. Data is stored here permanently
 
 ## How to Use
 
-execude any command inside the app container `docker-compose exec <command>`
-run artisan commands with `docker-compose exec app php artisan <command>`
-access database with `docker-compose exec mariadb mysql`
+- execude any command inside the app container `docker-compose exec <command>`
+- run artisan commands with `docker-compose exec app php artisan <command>`
+- run tests with `docker-compose exec app php artisan test`
+- access database with `docker-compose exec mariadb mysql`
 
 ## docker permission issue
 
