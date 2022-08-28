@@ -14,6 +14,12 @@ This is a demo using Docker and Laravel. Data is stored here permanently
 8. run `docker-compose exec app composer install`
 9. run `docker-compose exec app php artisan migrate` << Wait for mysql to be ready
 
+## How to Use
+
+execude any command inside the app container `docker-compose exec <command>`
+run artisan commands with `docker-compose exec app php artisan <command>`
+access database with `docker-compose exec mariadb mysql`
+
 ## docker permission issue
 
 follow these steps if you have permission issues running the container
