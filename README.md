@@ -21,6 +21,10 @@ This is a demo using Docker and Laravel. Data is stored here permanently
 - run tests with `docker-compose exec app php artisan test`
 - access database with `docker-compose exec mariadb mysql`
 
+### Default admin
+user: `bis@bis.de`
+password: `please_change_me!`
+
 ## docker permission issue
 
 follow these steps if you have permission issues running the container
