@@ -34,3 +34,4 @@ follow these steps if you have permission issues running the container
 3. `newgrp docker`
 4. try to run again
 5. if there is still an error, try reboot
+
